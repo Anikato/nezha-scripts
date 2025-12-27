@@ -7,7 +7,7 @@ pidfile="/run/${RC_SVCNAME}.pid"
 command="/opt/nezha/dashboard/app"
 command_args=""
 command_background=true
-directory="/opt/nezha/dashboard"
+directory="/data/nezha/dashboard"
 
 depend() {
 	  need net

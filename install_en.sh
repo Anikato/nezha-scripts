@@ -1,6 +1,9 @@
 #!/bin/sh
 
-NZ_BASE_PATH="/opt/nezha"
+NZ_BASE_PATH="/data/nezha"
+NZ_GITHUB_USER="Anikato"
+NZ_REPO_NAME="nezha"
+NZ_SCRIPTS_REPO_NAME="nezha-scripts"
 NZ_DASHBOARD_PATH="${NZ_BASE_PATH}/dashboard"
 NZ_DASHBOARD_SERVICE="/etc/systemd/system/nezha-dashboard.service"
 NZ_DASHBOARD_SERVICERC="/etc/init.d/nezha-dashboard"
@@ -228,18 +231,18 @@ init() {
     fi
 
     if [ -n "$CUSTOM_MIRROR" ]; then
-        GITHUB_RAW_URL="raw.githubusercontent.com/Anikato/nezha-scripts/main"
+        GITHUB_RAW_URL="raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/main"
         GITHUB_URL=$CUSTOM_MIRROR
-        Docker_IMG="ghcr.io\/Anikato\/nezha"
+        Docker_IMG="ghcr.io\/${NZ_GITHUB_USER}\/${NZ_REPO_NAME}"
     else
         if [ -z "$CN" ]; then
-            GITHUB_RAW_URL="raw.githubusercontent.com/Anikato/nezha-scripts/main"
+            GITHUB_RAW_URL="raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/main"
             GITHUB_URL="github.com"
-            Docker_IMG="ghcr.io\/Anikato\/nezha"
+            Docker_IMG="ghcr.io\/${NZ_GITHUB_USER}\/${NZ_REPO_NAME}"
         else
-            GITHUB_RAW_URL="raw.githubusercontent.com/Anikato/nezha-scripts/main"
+            GITHUB_RAW_URL="raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/main"
             GITHUB_URL="github.com"
-            Docker_IMG="ghcr.io\/Anikato\/nezha"
+            Docker_IMG="ghcr.io\/${NZ_GITHUB_USER}\/${NZ_REPO_NAME}"
         fi
     fi
 }
@@ -258,7 +261,7 @@ update_script() {
 }
 
 install_agent_v0() {
-    shell_url="https://raw.githubusercontent.com/Anikato/nezha-scripts/refs/heads/v0/install.sh"
+    shell_url="https://raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/refs/heads/v0/install.sh"
     file_name="nezha_v0.sh"
     if command -v wget >/dev/null 2>&1; then
         wget -O "/tmp/install_v0.sh" "$shell_url"
@@ -462,17 +465,17 @@ restart_and_update_docker() {
 }
 
 restart_and_update_standalone() {
-    _version=$(curl -m 10 -sL "https://api.github.com/repos/Anikato/nezha/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
+    _version=$(curl -m 10 -sL "https://api.github.com/repos/${NZ_GITHUB_USER}/${NZ_REPO_NAME}/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
     if [ -z "$_version" ]; then
-        _version=$(curl -m 10 -sL "https://fastly.jsdelivr.net/gh/Anikato/nezha/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/Anikato\/nezha@/v/g')
+        _version=$(curl -m 10 -sL "https://fastly.jsdelivr.net/gh/${NZ_GITHUB_USER}/${NZ_REPO_NAME}/" | grep "option\.value" | awk -F "'" '{print $2}' | sed "s/${NZ_GITHUB_USER}\/${NZ_REPO_NAME}@/v/g")
     fi
     if [ -z "$_version" ]; then
-        _version=$(curl -m 10 -sL "https://gcore.jsdelivr.net/gh/Anikato/nezha/" | grep "option\.value" | awk -F "'" '{print $2}' | sed 's/Anikato\/nezha@/v/g')
+        _version=$(curl -m 10 -sL "https://gcore.jsdelivr.net/gh/${NZ_GITHUB_USER}/${NZ_REPO_NAME}/" | grep "option\.value" | awk -F "'" '{print $2}' | sed "s/${NZ_GITHUB_USER}\/${NZ_REPO_NAME}@/v/g")
     fi
 
 
     if [ -z "$_version" ]; then
-        err "Fail to obtain Dashboard version, please check if the network can link https://api.github.com/repos/Anikato/nezha/releases/latest"
+        err "Fail to obtain Dashboard version, please check if the network can link https://api.github.com/repos/${NZ_GITHUB_USER}/${NZ_REPO_NAME}/releases/latest"
         return 1
     else
         echo "The current latest version is: ${_version}"
@@ -563,8 +566,8 @@ uninstall() {
 uninstall_dashboard_docker() {
     sudo $DOCKER_COMPOSE_COMMAND -f ${NZ_DASHBOARD_PATH}/docker-compose.yaml down
     sudo rm -rf $NZ_DASHBOARD_PATH
-    sudo docker rmi -f ghcr.io/Anikato/nezha >/dev/null 2>&1
-    sudo docker rmi -f registry.cn-shanghai.aliyuncs.com/Anikato/nezha-dashboard >/dev/null 2>&1
+    sudo docker rmi -f ghcr.io/${NZ_GITHUB_USER}/${NZ_REPO_NAME} >/dev/null 2>&1
+    sudo docker rmi -f registry.cn-shanghai.aliyuncs.com/${NZ_GITHUB_USER}/nezha-dashboard >/dev/null 2>&1
 }
 
 uninstall_dashboard_standalone() {

@@ -1,6 +1,9 @@
 #!/bin/sh
 
-NZ_BASE_PATH="/opt/nezha"
+NZ_BASE_PATH="/data/nezha"
+NZ_GITHUB_USER="Anikato"
+NZ_REPO_NAME="nezha"
+NZ_SCRIPTS_REPO_NAME="nezha-scripts"
 NZ_DASHBOARD_PATH="${NZ_BASE_PATH}/dashboard"
 NZ_DASHBOARD_SERVICE="/etc/systemd/system/nezha-dashboard.service"
 NZ_DASHBOARD_SERVICERC="/etc/init.d/nezha-dashboard"
@@ -212,18 +215,18 @@ init() {
     fi
 
     if [ -n "$CUSTOM_MIRROR" ]; then
-        GITHUB_RAW_URL="raw.githubusercontent.com/Anikato/nezha-scripts/main"
+        GITHUB_RAW_URL="raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/main"
         GITHUB_URL=$CUSTOM_MIRROR
-        Docker_IMG="ghcr.io/Anikato/nezha"
+        Docker_IMG="ghcr.io/${NZ_GITHUB_USER}/${NZ_REPO_NAME}"
     else
         if [ -z "$CN" ]; then
-            GITHUB_RAW_URL="raw.githubusercontent.com/Anikato/nezha-scripts/main"
+            GITHUB_RAW_URL="raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/main"
             GITHUB_URL="github.com"
-            Docker_IMG="ghcr.io/Anikato/nezha"
+            Docker_IMG="ghcr.io/${NZ_GITHUB_USER}/${NZ_REPO_NAME}"
         else
-            GITHUB_RAW_URL="raw.githubusercontent.com/Anikato/nezha-scripts/main"
-        GITHUB_URL="github.com"
-        Docker_IMG="ghcr.io/Anikato/nezha"
+            GITHUB_RAW_URL="raw.githubusercontent.com/${NZ_GITHUB_USER}/${NZ_SCRIPTS_REPO_NAME}/main"
+            GITHUB_URL="github.com"
+            Docker_IMG="ghcr.io/${NZ_GITHUB_USER}/${NZ_REPO_NAME}"
         fi
     fi
 

@@ -1,6 +1,8 @@
 #!/bin/sh
 
-NZ_BASE_PATH="/opt/nezha"
+NZ_BASE_PATH="/data/nezha"
+NZ_GITHUB_USER="Anikato"
+NZ_AGENT_REPO_NAME="nezha-agent"
 NZ_AGENT_PATH="${NZ_BASE_PATH}/agent"
 
 red='\033[0;31m'
@@ -118,7 +120,7 @@ install() {
     echo "Installing..."
 
     if [ -z "$NZ_AGENT_URL" ]; then
-        NZ_AGENT_URL="https://${GITHUB_URL}/Anikato/nezha-agent/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
+        NZ_AGENT_URL="https://${GITHUB_URL}/${NZ_GITHUB_USER}/${NZ_AGENT_REPO_NAME}/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
     fi
 
     if command -v wget >/dev/null 2>&1; then
