@@ -35,7 +35,7 @@ sudo() {
 }
 
 deps_check() {
-    local deps="curl unzip grep"
+    local deps="curl unzip"
     local _err=0
     local missing=""
 
@@ -50,22 +50,6 @@ deps_check() {
         err "Missing dependencies:$missing. Please install them and try again."
         exit 1
     fi
-}
-
-geo_check() {
-    api_list="https://blog.cloudflare.com/cdn-cgi/trace https://developers.cloudflare.com/cdn-cgi/trace"
-    ua="Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0"
-    set -- "$api_list"
-    for url in $api_list; do
-        text="$(curl -A "$ua" -m 10 -s "$url")"
-        endpoint="$(echo "$text" | sed -n 's/.*h=\([^ ]*\).*/\1/p')"
-        if echo "$text" | grep -qw 'CN'; then
-            isCN=true
-            break
-        elif echo "$url" | grep -q "$endpoint"; then
-            break
-        fi
-    done
 }
 
 env_check() {
@@ -123,29 +107,18 @@ init() {
     deps_check
     env_check
 
-    ## China_IP
-    if [ -z "$CN" ]; then
-        geo_check
-        if [ -n "$isCN" ]; then
-            CN=true
-        fi
-    fi
+    GITHUB_URL="github.com"
 
-    if [ -z "$CN" ]; then
-        GITHUB_URL="github.com"
-    else
-        GITHUB_URL="gitee.com"
+    if [ -n "$NZ_GITHUB_URL" ]; then
+        GITHUB_URL="$NZ_GITHUB_URL"
     fi
 }
 
 install() {
     echo "Installing..."
 
-    if [ -z "$CN" ]; then
-        NZ_AGENT_URL="https://${GITHUB_URL}/nezhahq/agent/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
-    else
-        _version=$(curl -m 10 -sL "https://gitee.com/api/v5/repos/naibahq/agent/releases/latest" | awk -F '"' '{for(i=1;i<=NF;i++){if($i=="tag_name"){print $(i+2)}}}')
-        NZ_AGENT_URL="https://${GITHUB_URL}/naibahq/agent/releases/download/${_version}/nezha-agent_${os}_${os_arch}.zip"
+    if [ -z "$NZ_AGENT_URL" ]; then
+        NZ_AGENT_URL="https://${GITHUB_URL}/Anikato/nezha-agent/releases/latest/download/nezha-agent_${os}_${os_arch}.zip"
     fi
 
     if command -v wget >/dev/null 2>&1; then
