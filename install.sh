@@ -150,19 +150,19 @@ update_script() {
 }
 
 install_agent_v0() {
-    shell_url="https://raw.githubusercontent.com/Anikato/nezha-scripts/refs/heads/v0/install.sh"
-    file_name="nezha_v0.sh"
+    shell_url="https://raw.githubusercontent.com/Anikato/nezha-scripts/main/agent/install.sh"
+    file_name="nezha_agent.sh"
     if command -v wget >/dev/null 2>&1; then
-        wget -O "/tmp/install_v0.sh" "$shell_url"
+        wget -O "/tmp/install_agent.sh" "$shell_url"
     elif command -v curl >/dev/null 2>&1; then
-        curl -o "/tmp/install_v0.sh" "$shell_url"
+        curl -o "/tmp/install_agent.sh" "$shell_url"
     fi
-    chmod a+x /tmp/install_v0.sh
-    mv -f /tmp/install_v0.sh ./nezha_v0.sh
+    chmod a+x /tmp/install_agent.sh
+    mv -f /tmp/install_agent.sh ./nezha_agent.sh
     echo "3s后执行新脚本"
     sleep 3s
     clear
-    exec ./nezha_v0.sh "$@"
+    exec ./nezha_agent.sh "$@"
     exit 0
 }
 
